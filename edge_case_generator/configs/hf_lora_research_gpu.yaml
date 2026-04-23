@@ -1,0 +1,89 @@
+seed: 23
+debug: false
+
+model:
+  type: pretrained_llm
+  backend: huggingface
+  include_gt_code: false
+  huggingface:
+    pretrained_model_name_or_path: TinyLlama/TinyLlama-1.1B-Chat-v1.0
+    trust_remote_code: false
+    use_fast_tokenizer: true
+    use_safetensors: true
+    padding_side: left
+    device: cuda
+    torch_dtype: float16
+    low_cpu_mem_usage: true
+    learning_rate: 0.00005
+    weight_decay: 0.0
+    optimizer: adamw
+    max_grad_norm: 1.0
+    normalize_loss_by_tokens: true
+    adapter:
+      enabled: true
+      name: edge_case_lora
+      r: 16
+      alpha: 32
+      dropout: 0.05
+
+dataset:
+  path: edge_case_generator/data/demo_dataset.jsonl
+  split:
+    train: 0.67
+    val: 0.0
+    test: 0.33
+  subset: null
+
+execution:
+  timeout_sec: 0.75
+  python_executable: python3
+
+sampling:
+  group_size: 16
+  temperature: 0.9
+  top_p: 0.95
+  max_len: 48
+
+rl:
+  algorithm: grpo
+  num_iterations: 20
+  learning_rate: 0.00005
+  baseline_momentum: 0.9
+
+grpo:
+  advantage_normalization: std_normalized
+  eps: 1.0e-8
+
+reward:
+  verify_weight: 6.0
+  newfreq_weight: 2.5
+  length_efficiency_weight: 0.15
+  duplicate_weight: 2.0
+  verify:
+    mode: binary
+    cap: 1
+  newfreq:
+    allocation: inverse_frequency
+  length_efficiency:
+    enabled: true
+    mode: inverse_normalized_length
+    min_length: 1
+    target_length: 12
+    max_length: 48
+    eps: 1.0e-8
+  duplicate:
+    check_group_duplicates: true
+    check_replay_duplicates: true
+    check_recent_history: true
+
+buffer:
+  path: outputs/hf_lora_research_gpu/replay_buffer.jsonl
+  recent_window_size: 200
+
+output:
+  dir: outputs/hf_lora_research_gpu
+  checkpoint_every: 5
+
+logging:
+  level: INFO
+
