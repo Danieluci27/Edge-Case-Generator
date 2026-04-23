@@ -1,0 +1,31 @@
+# Python caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Packaging artifacts
+*.egg-info/
+build/
+dist/
+
+# Editor / OS files
+.DS_Store
+.idea/
+.vscode/
+
+# Experiment outputs and logs
+outputs/
+data/
+*.log
+
+# Model artifacts
+*.bin
+*.pt
+*.pth
+*.safetensors

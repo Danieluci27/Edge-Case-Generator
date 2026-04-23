@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "edge-case-generator"
+version = "0.1.0"
+description = "End-to-end research training pipeline for verified edge-case generation."
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+  "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+]
+data = [
+  "datasets>=2.18",
+]
+hf = [
+  "torch>=2.1",
+  "transformers>=4.40",
+  "peft>=0.17.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["edge_case_generator/tests"]
+
+[tool.setuptools.packages.find]
+where = ["."]

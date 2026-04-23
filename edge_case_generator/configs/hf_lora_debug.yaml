@@ -1,0 +1,85 @@
+seed: 11
+debug: true
+
+model:
+  type: pretrained_llm
+  backend: huggingface
+  include_gt_code: false
+  huggingface:
+    pretrained_model_name_or_path: Intel/tiny-random-distilgpt2
+    trust_remote_code: false
+    use_fast_tokenizer: true
+    use_safetensors: true
+    padding_side: left
+    device: cpu
+    torch_dtype: auto
+    low_cpu_mem_usage: false
+    learning_rate: 0.0001
+    weight_decay: 0.0
+    optimizer: adamw
+    max_grad_norm: 1.0
+    normalize_loss_by_tokens: true
+    adapter:
+      enabled: true
+      name: edge_case_lora
+      r: 8
+      alpha: 16
+      dropout: 0.05
+
+dataset:
+  path: edge_case_generator/data/demo_dataset.jsonl
+  split:
+    train: 0.67
+    val: 0.0
+    test: 0.33
+  subset: null
+
+execution:
+  timeout_sec: 0.5
+  python_executable: python3
+
+sampling:
+  group_size: 4
+  temperature: 1.0
+  top_p: 0.95
+  max_len: 32
+
+rl:
+  algorithm: grpo
+  num_iterations: 2
+  learning_rate: 0.0001
+  baseline_momentum: 0.8
+
+grpo:
+  advantage_normalization: std_normalized
+  eps: 1.0e-8
+
+reward:
+  verify_weight: 5.0
+  newfreq_weight: 2.0
+  length_efficiency_weight: 0.2
+  duplicate_weight: 1.5
+  newfreq:
+    allocation: inverse_frequency
+  length_efficiency:
+    enabled: true
+    mode: inverse_normalized_length
+    min_length: 1
+    target_length: 8
+    max_length: 32
+    eps: 1.0e-8
+  duplicate:
+    check_group_duplicates: true
+    check_replay_duplicates: true
+    check_recent_history: true
+
+buffer:
+  path: outputs/hf_lora_debug/replay_buffer.jsonl
+  recent_window_size: 50
+
+output:
+  dir: outputs/hf_lora_debug
+  checkpoint_every: 1
+
+logging:
+  level: INFO

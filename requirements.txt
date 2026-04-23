@@ -1,0 +1,5 @@
+PyYAML>=6.0
+torch>=2.1
+transformers>=4.40
+peft>=0.17.0
+pytest>=8.0

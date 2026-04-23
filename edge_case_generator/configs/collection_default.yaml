@@ -1,0 +1,37 @@
+seed: 7
+debug: false
+target_language: python
+max_problems: 50
+sources:
+  codenet:
+    enabled: false
+    path: /path/to/codenet_dataset.jsonl
+  codecontests:
+    enabled: true
+    hf_dataset: deepmind/code_contests
+    hf_split: train
+    hf_cache_dir: data/raw/hf_cache
+    path: null
+  apps:
+    enabled: false
+    path: /path/to/apps_dataset.jsonl
+gt_selection:
+  keep_multiple: false
+  max_refs_per_problem: 1
+buggy_collection:
+  max_real_buggy_per_problem: 5
+synthetic_mutation:
+  enabled: true
+  per_reference_limit: 3
+execution:
+  timeout_sec: 2.0
+  python_executable: python3
+sampling:
+  num_samples_per_problem: 64
+  max_attempts_per_problem: 128
+  min_mismatch_cases_per_problem: 3
+  save_rejected_diagnostics: false
+comparison:
+  mode: normalized
+output:
+  dir: outputs/collection

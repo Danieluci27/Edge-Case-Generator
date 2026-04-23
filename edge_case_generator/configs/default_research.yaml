@@ -1,0 +1,63 @@
+seed: 13
+debug: false
+
+model:
+  type: template_policy
+
+dataset:
+  path: edge_case_generator/data/demo_dataset.jsonl
+  split:
+    train: 0.67
+    val: 0.0
+    test: 0.33
+  subset: null
+
+execution:
+  timeout_sec: 1.0
+  python_executable: python3
+
+sampling:
+  group_size: 8
+  temperature: 0.9
+  top_p: 1.0
+  max_len: 256
+
+rl:
+  algorithm: grpo
+  num_iterations: 12
+  learning_rate: 0.35
+  baseline_momentum: 0.9
+
+grpo:
+  advantage_normalization: std_normalized
+  eps: 1.0e-8
+
+reward:
+  verify_weight: 6.0
+  newfreq_weight: 2.5
+  length_efficiency_weight: 0.15
+  duplicate_weight: 2.0
+  newfreq:
+    allocation: inverse_sqrt_frequency
+  length_efficiency:
+    enabled: true
+    mode: residual
+    min_length: 1
+    target_length: 12
+    max_length: 256
+    eps: 1.0e-8
+  duplicate:
+    check_group_duplicates: true
+    check_replay_duplicates: true
+    check_recent_history: true
+
+buffer:
+  path: outputs/default_run/replay_buffer.jsonl
+  recent_window_size: 100
+
+output:
+  dir: outputs/default_run
+  checkpoint_every: 3
+
+logging:
+  level: INFO
